@@ -3,7 +3,6 @@ WITH
  STEP1 AS ( SELECT TheText='TestData' UNION ALL SELECT TheText='TestData BOOYA' )
 ,STEP2 AS ( SELECT *, TheTextBin = CAST(TheText AS VARBINARY(MAX)) FROM STEP1 )
 ,STEP3 AS ( SELECT *, TheTextB64 = CAST(N'' AS XML).value('xs:base64Binary(xs:hexBinary(sql:column("TheTextBin")))', 'VARCHAR(MAX)') FROM STEP2 )
---,STEP4 AS ( SELECT *, TheTextDecoded = CAST(CAST(N'' AS XML).value('xs:base64Binary("TheTextB64")', 'VARBINARY(MAX)') AS VARCHAR(MAX)) FROM STEP3 )
 ,STEP4 AS (SELECT *, TheTextDecoded = CONVERT(VARCHAR(MAX), CAST('' AS XML).value('xs:base64Binary(sql:column("TheTextB64"))', 'VARBINARY(MAX)')) FROM STEP3 )
 
 SELECT * FROM STEP4
